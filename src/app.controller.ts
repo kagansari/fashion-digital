@@ -23,10 +23,16 @@ export class AppController {
   constructor() {}
 
   async getFileStream(url: string): Promise<Readable> {
-    const response = await axios.get(url, { responseType: "stream" });
-    const excelStream = response.data;
+    try {
+      const response = await axios.get(url, { responseType: "stream" });
+      const excelStream = response.data;
 
-    return excelStream;
+      return excelStream;
+    } catch (err) {
+      console.error(err);
+      const message = `File is not valid, Message: ${err.message}, URL: ${url}`;
+      throw new BadRequestException(message);
+    }
   }
 
   @Get("evaluation")
